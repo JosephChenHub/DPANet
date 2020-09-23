@@ -45,10 +45,12 @@ The saliency maps are also available ([Google drive](https://drive.google.com/fi
 We provide the evaluation code in the folder  "eval_code" for fair comparisons. You may need to revise the `algorithms` , `data_root`, and `maps_root` defined in the `main.m`. The saliency maps of the competitors (official maps or obtained by running the official code) are provided ([Google drive](https://drive.google.com/drive/folders/1G3XCOnQTQA-QrSWt6VwJXU1jbAQJS3Hy?usp=sharing)).
 
 ## Citation
-
+Please cite the `DPANet` in your publications if it helps your research:
+```
 @article{chen2020depth,
   title={Depth Potentiality-Aware Gated Attention Network for RGB-D Salient Object Detection},
   author={Chen, Zuyao and Cong, Runmin and Xu, Qianqian and Huang, Qingming},
   journal={IEEE Trans. Image Process},
   year={2020}
 }
+```
