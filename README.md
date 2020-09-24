@@ -42,7 +42,7 @@ you will obtain the result ` `.
 The saliency maps are also available ([Google drive](https://drive.google.com/file/d/1sIqEKDCi_rSY4t1THPlBSyAd05F2ve_Q/view?usp=sharing)). 
 
 ## Evaluation
-We provide the evaluation code in the folder  "eval_code" for fair comparisons. You may need to revise the `algorithms` , `data_root`, and `maps_root` defined in the `main.m`. The saliency maps of the competitors (official maps or obtained by running the official code) are provided ([Google drive](https://drive.google.com/drive/folders/1G3XCOnQTQA-QrSWt6VwJXU1jbAQJS3Hy?usp=sharing)).
+We provide the evaluation code in the folder  "eval_code" for fair comparisons. You may need to revise the `algorithms` , `prepath`, and `maskpath` defined in the `main.m`. The saliency maps of the competitors (official maps or obtained by running the official code) are provided ([Google drive](https://drive.google.com/drive/folders/1G3XCOnQTQA-QrSWt6VwJXU1jbAQJS3Hy?usp=sharing)).
 
 ## Citation
 Please cite the `DPANet` in your publications if it helps your research:
