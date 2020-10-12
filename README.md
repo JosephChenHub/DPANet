@@ -1,4 +1,4 @@
-# Depth Potentiality-Aware Gated Attention Network for RGB-D Salient Object Detection
+# [Depth Potentiality-Aware Gated Attention Network for RGB-D Salient Object Detection](https://arxiv.org/pdf/2003.08608.pdf)
 
 This repo. is an official implementation of the *DPANet* , which has been accepted in the journal *IEEE Transactions on Image Processing, 2020*. 
 
