@@ -50,7 +50,7 @@ Please cite the `DPANet` in your publications if it helps your research:
 @article{chen2020depth,
   title={Depth Potentiality-Aware Gated Attention Network for RGB-D Salient Object Detection},
   author={Chen, Zuyao and Cong, Runmin and Xu, Qianqian and Huang, Qingming},
-  journal={IEEE Trans. Image Process},
+  journal={IEEE Transactions on Image Processing},
   year={2020}
 }
 ```
