@@ -21,9 +21,7 @@ from network  import Segment
 import time
 import logging as logger
 import argparse
-
-#TAG = "rgbd_v0"
-#SAVE_PATH = TAG
+from tqdm import tqdm
 
 
 
@@ -46,7 +44,7 @@ class Test(object):
         self.data   = Dataset.RGBDData(self.cfg)
         self.loader = DataLoader(self.data, batch_size=1, shuffle=True, num_workers=0)
         ## network
-        self.net    = Network(cfg=self.cfg, norm_layer=nn.BatchNorm2d)
+        self.net    = Network(backbone='resnet50', cfg=self.cfg, norm_layer=nn.BatchNorm2d)
         self.net.train(False)
         self.net.cuda()
         self.net.eval()
@@ -124,7 +122,7 @@ class Test(object):
 
     def save(self):
         with torch.no_grad():
-            for image, d, mask, (H, W), name in self.loader:
+            for image, d, mask, (H, W), name in tqdm(self.loader):
                 image, d = image.cuda().float(), d.cuda().float()
                 out,  gate = self.net(image, d)
                 out     = F.interpolate(out, size=(H,W), mode='bilinear')
@@ -148,7 +146,7 @@ if __name__=='__main__':
     os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu)
     for e in DATASETS:
         t =Test(args, dataset, e, Segment)
-#        t.accuracy() # this is not accurate due to the resize operation, please use the matlab code to eval the performance
+        t.accuracy() # this is not accurate due to the resize operation, please use the matlab code to eval the performance
 #        t.show()
         t.save()
 

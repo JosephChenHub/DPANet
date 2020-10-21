@@ -42,13 +42,13 @@ class FAM(nn.Module):
         down_mask = self.conv_d1(down)
         left_mask = self.conv_l(left)
         if down.size()[2:] != left.size()[2:]:
-            down_ = F.interpolate(down, size=left.size()[2:], mode='bilinear', align_corners=True)
+            down_ = F.interpolate(down, size=left.size()[2:], mode='bilinear')
             z1 = F.relu(left_mask * down_, inplace=True)
         else:
             z1 = F.relu(left_mask * down, inplace=True)
 
         if down_mask.size()[2:] != left.size()[2:]:
-            down_mask = F.interpolate(down_mask, size=left.size()[2:], mode='bilinear', align_corners=True)
+            down_mask = F.interpolate(down_mask, size=left.size()[2:], mode='bilinear')
 
         z2 = F.relu(down_mask * left, inplace=True)
 
@@ -61,9 +61,9 @@ class FAM(nn.Module):
 class CrossAttention(nn.Module):
     def __init__(self, in_channel=256, ratio=8):
         super(CrossAttention, self).__init__()
-        self.conv_query = nn.Conv2d(in_channel, in_channel//ratio, kernel_size=1, bias=False)
-        self.conv_key   = nn.Conv2d(in_channel, in_channel//ratio, kernel_size=1, bias=False)
-        self.conv_value = nn.Conv2d(in_channel, in_channel, kernel_size=1, bias=False)
+        self.conv_query = nn.Conv2d(in_channel, in_channel//ratio, kernel_size=1)
+        self.conv_key   = nn.Conv2d(in_channel, in_channel//ratio, kernel_size=1)
+        self.conv_value = nn.Conv2d(in_channel, in_channel, kernel_size=1)
 
     def forward(self, rgb, depth):
         bz, c, h, w = rgb.shape
@@ -137,22 +137,27 @@ class Segment(nn.Module):
             channels = [64, 128, 256, 512]
             self.backbone_rgb =  resnet18(in_channel=3, norm_layer=norm_layer)
             self.backbone_d = resnet18(in_channel=1, norm_layer=norm_layer)
-            self.backbone_rgb = load_model(self.backbone_rgb, 'model_zoo/resnet18-5c106cde.pth')
-            self.backbone_d = load_model(self.backbone_d, 'model_zoo/resnet18-5c106cde.pth', depth_input=True)
+            backbone_rgb = load_model(self.backbone_rgb, 'model_zoo/resnet18-5c106cde.pth')
+            backbone_d = load_model(self.backbone_d, 'model_zoo/resnet18-5c106cde.pth', depth_input=True)
         elif backbone == 'resnet34':
             channels = [64, 128, 256, 512] # resnet34
             self.backbone_rgb =  resnet34(in_channel=3, norm_layer=norm_layer)
             self.backbone_d = resnet34(in_channel=1, norm_layer=norm_layer)
-            self.backbone_rgb = load_model(self.backbone_rgb, 'model_zoo/resnet34-333f7ec4.pth')
-            self.backbone_d = load_model(self.backbone_rgb, 'model_zoo/resnet34-333f7ec4.pth', depth_input=True)
+            backbone_rgb = load_model(self.backbone_rgb, 'model_zoo/resnet34-333f7ec4.pth')
+            backbone_d = load_model(self.backbone_rgb, 'model_zoo/resnet34-333f7ec4.pth', depth_input=True)
         elif backbone == 'resnet50':
             channels = [256, 512, 1024, 2048]
             self.backbone_rgb =  resnet50(in_channel=3, norm_layer=norm_layer)
             self.backbone_d = resnet50(in_channel=1, norm_layer=norm_layer)
-            self.backbone_rgb = load_model(self.backbone_rgb, 'model_zoo/resnet50-19c8e357.pth')
-            self.backbone_d = load_model(self.backbone_rgb, 'model_zoo/resnet50-19c8e357.pth', depth_input=True)
+            backbone_rgb = load_model(self.backbone_rgb, 'model_zoo/resnet50-19c8e357.pth')
+            backbone_d = load_model(self.backbone_rgb, 'model_zoo/resnet50-19c8e357.pth', depth_input=True)
         else:
             raise Exception("backbone:%s does not support!"%backbone)
+        if backbone_rgb is None:
+            print("Warning: the model_zoo of {} does no exist!".format(backbone))
+        else:
+            self.backbone_rgb = backbone_rgb
+            self.backbone_d = backbone_d
 
 
         # fusion modules
@@ -230,17 +235,17 @@ class Segment(nn.Module):
 
         # final fusion
         out = self.fusion(out2_1, out2_2, alpha, gate)
-        out = F.interpolate(self.linear_out(out), size=raw_size, mode='bilinear', align_corners=True)
+        out = F.interpolate(self.linear_out(out), size=raw_size, mode='bilinear', )
         # aux_layer
         if self.training and self.aux_layers:
-            out5_1 = F.interpolate(self.linear5_1(out5_1), size=raw_size, mode='bilinear', align_corners=True)
-            out4_1 = F.interpolate(self.linear4_1(out4_1), size=raw_size, mode='bilinear', align_corners=True)
-            out3_1 = F.interpolate(self.linear3_1(out3_1), size=raw_size, mode='bilinear', align_corners=True)
-            out2_1 = F.interpolate(self.linear2_1(out2_1), size=raw_size, mode='bilinear', align_corners=True)
-            out5_2 = F.interpolate(self.linear5_2(out5_2), size=raw_size, mode='bilinear', align_corners=True)
-            out4_2 = F.interpolate(self.linear4_2(out4_2), size=raw_size, mode='bilinear', align_corners=True)
-            out3_2 = F.interpolate(self.linear3_2(out3_2), size=raw_size, mode='bilinear', align_corners=True)
-            out2_2 = F.interpolate(self.linear2_2(out2_2), size=raw_size, mode='bilinear', align_corners=True)
+            out5_1 = F.interpolate(self.linear5_1(out5_1), size=raw_size, mode='bilinear')
+            out4_1 = F.interpolate(self.linear4_1(out4_1), size=raw_size, mode='bilinear')
+            out3_1 = F.interpolate(self.linear3_1(out3_1), size=raw_size, mode='bilinear')
+            out2_1 = F.interpolate(self.linear2_1(out2_1), size=raw_size, mode='bilinear')
+            out5_2 = F.interpolate(self.linear5_2(out5_2), size=raw_size, mode='bilinear')
+            out4_2 = F.interpolate(self.linear4_2(out4_2), size=raw_size, mode='bilinear')
+            out3_2 = F.interpolate(self.linear3_2(out3_2), size=raw_size, mode='bilinear')
+            out2_2 = F.interpolate(self.linear2_2(out2_2), size=raw_size, mode='bilinear')
 
             return out, out2_1, out3_1, out4_1, out5_1, out2_2, out3_2, out4_2, out5_2, gate.view(bz, -1)
         else:

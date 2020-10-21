@@ -33,11 +33,12 @@ make sure  that the GPU memory is enough (the original training is conducted on 
  python3 test.py --tag res50 --gpu 0 --model res50_res/model-30
 ```
 
-[TODO] We provide the trained model file ([Google drive]()), and run this command to check its integrity:
+We provide the trained model file ([Google drive](https://drive.google.com/file/d/1bXERDgTKfzkZfXKs8z5vj1QNM3zL-QTL/view?usp=sharing)), and run this command to check its integrity:
 ```
-md5sum model-res50-30.pt 
+md5sum model-res50-epoch30.pt 
 ```
-you will obtain the result ` `.
+you will obtain the code `b666d297e0237035f6e48f80711ca927`.
+Please use the matlab code to evaluate the MAE, F-measure, or other metrics rather than using the `accuracy` defined in the `test.py`.
 
 The saliency maps are also available ([Google drive](https://drive.google.com/file/d/1sIqEKDCi_rSY4t1THPlBSyAd05F2ve_Q/view?usp=sharing)). 
 
